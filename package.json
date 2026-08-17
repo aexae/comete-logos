@@ -1,8 +1,8 @@
 {
-  "name": "@naxit/comete-logos",
-  "version": "0.12.3",
+  "name": "@aexae/comete-logos",
+  "version": "0.12.4",
   "description": "Comète logo library — React components for product logos with theme-aware appearance variants via design tokens",
-  "author": "naxit",
+  "author": "aexae",
   "license": "AGPL-3.0-only",
   "type": "module",
   "sideEffects": false,
@@ -21,7 +21,7 @@
   "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
   "repository": {
     "type": "git",
-    "url": "https://github.com/naxit/comete-logos.git"
+    "url": "https://github.com/aexae/comete-logos.git"
   },
   "keywords": [
     "logos",

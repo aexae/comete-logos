@@ -61,7 +61,7 @@ export interface LogoProps extends Omit<SVGAttributes<SVGSVGElement>, "color"> {
    *
    * When provided, these colors are used as inline styles instead of
    * the CSS custom-property–based classes. Useful for contexts where
-   * `@naxit/comete-design-tokens` CSS is not loaded (static exports,
+   * `@aexae/comete-design-tokens` CSS is not loaded (static exports,
    * emails, etc.).
    */
   colors?: LogoColors;
