@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   ci:
     name: Typecheck · Lint · Build
@@ -28,7 +32,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.PKG_READ_TOKEN }}
+          # GITHUB_TOKEN (Actions, permissions: packages: read) : lit @aexae/comete-design-tokens
+          # (privé) qui accorde l'Actions access à ce dépôt. Plus de PAT.
+          NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Typecheck
         run: pnpm typecheck
