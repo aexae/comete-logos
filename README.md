@@ -168,6 +168,17 @@ pnpm clean        # Supprime dist/
 
 `prepublishOnly` enchaîne `typecheck` → `lint` → `build`.
 
+## Publication
+
+Publication manuelle sur GitHub Packages (ce dépôt n'a pas de workflow CI de publication) :
+
+```bash
+# bump la version dans package.json, committer, puis :
+NPM_AUTH_TOKEN=$(gh auth token) pnpm publish --no-git-checks
+```
+
+`gh auth token` doit porter le scope `write:packages` (sinon `gh auth refresh -h github.com -s write:packages`). Aucun PAT stocké.
+
 ## Stack
 
 React 18/19 · TypeScript strict · ESM uniquement · tsup (splitting + treeshake) · Biome · Node ≥ 22
