@@ -170,14 +170,13 @@ pnpm clean        # Supprime dist/
 
 ## Publication
 
-Publication manuelle sur GitHub Packages (ce dépôt n'a pas de workflow CI de publication) :
+Automatisée par la CI (`.github/workflows/publish.yml`) au push d'un tag `v*`, via le `GITHUB_TOKEN` d'Actions (`packages: write`), aucun PAT requis. `prepublishOnly` enchaîne typecheck, lint et build avant la publication. Les pré-releases (tag contenant `-`) sont publiées sous le dist-tag `alpha`.
 
 ```bash
 # bump la version dans package.json, committer, puis :
-NPM_AUTH_TOKEN=$(gh auth token) pnpm publish --no-git-checks
+git tag v0.12.5
+git push origin main v0.12.5   # le tag déclenche le workflow Publish
 ```
-
-`gh auth token` doit porter le scope `write:packages` (sinon `gh auth refresh -h github.com -s write:packages`). Aucun PAT stocké.
 
 ## Stack
 
