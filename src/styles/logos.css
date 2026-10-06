@@ -21,15 +21,19 @@
 
 /* ── Inverse ────────────────────────────────────────────────────────── */
 /*
- * WHY --_logo-subtle uses `subtle` (not `inverted`):
- * The "on time" wordmark is visually secondary. Using the subtle token
- * gives it a muted tone (#596B70 light / #B5C1C4 dark) rather than
- * the full inverted text colour.
+ * WHY --_logo-subtle uses `subtle-inverted` (not `subtle`, not `inverted`):
+ * The "on time" wordmark is visually secondary, so it stays muted rather
+ * than taking the full inverted text colour. But inverse sits on the
+ * surface OPPOSITE to the theme (dark surface in light theme, light surface
+ * in dark theme), so the muted tone must be the opposite theme's one:
+ * #B5C1C4 in light theme, #596B70 in dark theme (5 to 8:1 on the inverted
+ * surfaces). `subtle` alone gave 1.6 to 2.6:1, i.e. an unreadable suffix.
+ * Fallback to `subtle` keeps tokens < 0.17 rendering as before.
  */
 .comete-logo--inverse {
   --_logo-text: var(--logo-comete-inverted);
   --_logo-icon: var(--logo-comete-inverted);
-  --_logo-subtle: var(--logo-comete-subtle);
+  --_logo-subtle: var(--logo-comete-subtle-inverted, var(--logo-comete-subtle));
   --_logo-gradient-light: var(--logo-comete-gradient-light);
   --_logo-gradient-dark: var(--logo-comete-gradient-dark);
 }
