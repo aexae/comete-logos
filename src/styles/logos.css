@@ -28,7 +28,9 @@
  * in dark theme), so the muted tone must be the opposite theme's one:
  * #B5C1C4 in light theme, #596B70 in dark theme (5 to 8:1 on the inverted
  * surfaces). `subtle` alone gave 1.6 to 2.6:1, i.e. an unreadable suffix.
- * Fallback to `subtle` keeps tokens < 0.17 rendering as before.
+ * The peer dep now requires tokens >= 0.17, so the token is always there;
+ * the `subtle` fallback only remains as a guard for a stylesheet that was
+ * not loaded, so the suffix still renders rather than collapsing to nothing.
  */
 .comete-logo--inverse {
   --_logo-text: var(--logo-comete-inverted);
