@@ -44,6 +44,11 @@ export interface LogoColors {
   gradientLight: string;
   /** Gradient stop color (dark yellow/gold). */
   gradientDark: string;
+  /**
+   * Fill color for the product suffix and the Comète tagline. Optional: when
+   * omitted, the hardcoded fallback for the logo's appearance is used.
+   */
+  subtle?: string;
 }
 
 /** Props accepted by all logo components. */

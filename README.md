@@ -116,8 +116,11 @@ Le thème est piloté par l'attribut `data-theme` sur un ancêtre (typiquement `
   icon: "#1E3661",
   gradientLight: "#FFF146",
   gradientDark: "#F8BF01",
+  subtle: "#596B70", // optionnel
 }} />
 ```
+
+`subtle` colore le suffixe produit et la signature Comète. S'il est omis, le ton par défaut de l'apparence s'applique : `#596B70` (brand, sur fond blanc), `#224986` (neutral), `#B5C1C4` (inverse, sur fond navy). Un gris unique ne peut pas être lisible sur les deux surfaces.
 
 Les valeurs par défaut (miroir du thème clair) sont exposées dans `src/fallbacks.ts`.
 

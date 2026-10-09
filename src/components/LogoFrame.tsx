@@ -34,6 +34,7 @@
 //   legacy single-SVG version — hence the overlay matches pixel-for-pixel.
 
 import type { CSSProperties, ReactElement } from "react";
+import { getFallback } from "../fallbacks";
 import { TAGLINE_PATHS } from "../tagline-paths";
 import type {
   LogoAppearance,
@@ -103,8 +104,6 @@ const COLUMN_SCALE = 0.6;
 
 // Tagline viewBox for comete column taglineAlign (= BOTTOM_VIEWBOX - wordmark row).
 const COMETE_TAGLINE_VIEWBOX = "0 0 141 7";
-// Default subtle colour used for the tagline paths when no CSS tokens exist.
-const FALLBACK_SUBTLE = "#6F8488";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -114,7 +113,10 @@ const FALLBACK_SUBTLE = "#6F8488";
  * when the caller provided explicit `colors`. Each child component already
  * reads these variables, so the override cascades through the wrapper.
  */
-function fallbackVars(colors?: LogoColors): CSSProperties | undefined {
+function fallbackVars(
+  colors: LogoColors | undefined,
+  subtle: string | undefined,
+): CSSProperties | undefined {
   if (!colors) return undefined;
   // Cast: React's CSSProperties doesn't model custom properties.
   const vars = {
@@ -122,7 +124,7 @@ function fallbackVars(colors?: LogoColors): CSSProperties | undefined {
     "--_logo-icon": colors.icon,
     "--_logo-gradient-light": colors.gradientLight,
     "--_logo-gradient-dark": colors.gradientDark,
-    "--_logo-subtle": FALLBACK_SUBTLE,
+    "--_logo-subtle": subtle,
   } as Record<string, string>;
   return vars as CSSProperties;
 }
@@ -148,8 +150,8 @@ function CometeTagline({
 }: {
   /** Height of the wordmark row in pixels (the tagline width matches). */
   size: number;
-  /** When true, paints with the fallback hex rather than `--_logo-subtle`. */
-  fallback: boolean;
+  /** Hex to paint with in fallback mode, rather than `--_logo-subtle`. */
+  fallback?: string;
 }): ReactElement {
   // Width: the tagline is natively ~141u wide, the wordmark is 144u, so we
   // keep wordmark width (144) to align both rows.
@@ -170,7 +172,7 @@ function CometeTagline({
           <path
             key={d}
             d={d}
-            style={{ fill: fallback ? FALLBACK_SUBTLE : "var(--_logo-subtle)" }}
+            style={{ fill: fallback ?? "var(--_logo-subtle)" }}
           />
         ))}
       </g>
@@ -199,7 +201,12 @@ export function LogoFrame({
 }: LogoFrameProps): ReactElement {
   const hasFallback = colors !== undefined;
   const cls = wrapperClass(appearance, hasFallback, className);
-  const vars = fallbackVars(colors);
+  // Suffix/tagline tone in fallback mode depends on the surface the
+  // appearance targets (white for brand/neutral, navy for inverse).
+  const fallbackSubtle = colors
+    ? (colors.subtle ?? getFallback(appearance).subtle)
+    : undefined;
+  const vars = fallbackVars(colors, fallbackSubtle);
 
   // ---------- Icon-only format -------------------------------------------
   if (format === "icon") {
@@ -264,7 +271,7 @@ export function LogoFrame({
       >
         {wordmarkRow}
         <span style={{ marginTop: (3 * size) / 32 }}>
-          <CometeTagline size={size} fallback={hasFallback} />
+          <CometeTagline size={size} fallback={fallbackSubtle} />
         </span>
       </span>
     );
