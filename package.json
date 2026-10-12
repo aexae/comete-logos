@@ -1,6 +1,6 @@
 {
   "name": "@aexae/comete-logos",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Comète logo library — React components for product logos with theme-aware appearance variants via design tokens",
   "author": "aexae",
   "license": "AGPL-3.0-only",
