@@ -1,10 +1,13 @@
 import type { ComponentType, SVGAttributes } from "react";
 
 /** Appearance variant for logos. */
-export type LogoAppearance = "brand" | "neutral" | "inverse";
+export type LogoAppearance = "brand" | "neutral" | "inverted";
 
-/** Display format: icon only or full logo (icon + wordmark). */
-export type LogoFormat = "icon" | "logo";
+/**
+ * Display format: icon only, full logo (icon + wordmark), or wordmark only
+ * (the standalone Figma wordmark drawing, letters with a ring "o", no icon).
+ */
+export type LogoFormat = "icon" | "logo" | "wordmark";
 
 /** @deprecated Use LogoFormat instead. */
 export type LogoType = LogoFormat;
@@ -15,9 +18,16 @@ export type LogoTaglineAlign = "none" | "inline" | "column";
 /** @deprecated Use LogoTaglineAlign instead. */
 export type LogoSuffix = LogoTaglineAlign;
 
-/** Available product names. */
-export type LogoProduct =
-  | "comete"
+/**
+ * Who or what the logo stands for: the company, the ERP software, or one of
+ * the product lines. "Entity" rather than "product" because the company
+ * itself is not a product, yet it has a logo.
+ */
+export type LogoEntity =
+  /** Comète, the ERP software (no tagline). */
+  | "comete-software"
+  /** Comète, the company (wordmark + tagline). */
+  | "comete-company"
   | "ontime"
   | "link"
   | "bi"
@@ -26,6 +36,9 @@ export type LogoProduct =
   | "mce"
   | "cafe"
   | "mycomete";
+
+/** @deprecated Use LogoEntity instead. */
+export type LogoProduct = LogoEntity;
 
 /**
  * Color overrides for logo rendering.
@@ -57,7 +70,7 @@ export interface LogoProps extends Omit<SVGAttributes<SVGSVGElement>, "color"> {
   appearance?: LogoAppearance;
   /** Display format: icon only or full logo. @default "logo" */
   format?: LogoFormat;
-  /** TaglineAlign display mode for product logos. @default "inline" */
+  /** TaglineAlign display mode for product logos. @default "inline" ("column" for comete-company) */
   taglineAlign?: LogoTaglineAlign;
   /** Rendered height in pixels. Width scales proportionally. @default 32 */
   size?: number;
@@ -74,5 +87,5 @@ export interface LogoProps extends Omit<SVGAttributes<SVGSVGElement>, "color"> {
   className?: string;
 }
 
-/** Registry mapping product names to their logo components. */
-export type LogoRegistry = Record<LogoProduct, ComponentType<LogoProps>>;
+/** Registry mapping entities to their logo components. */
+export type LogoRegistry = Record<LogoEntity, ComponentType<LogoProps>>;

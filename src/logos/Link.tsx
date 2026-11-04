@@ -6,7 +6,7 @@ import { LogoFrame } from "../components/LogoFrame";
 import type { LogoProps } from "../types";
 
 export function Link(props: LogoProps): ReactElement {
-  return <LogoFrame product="link" {...props} />;
+  return <LogoFrame entity="link" {...props} />;
 }
 
 Link.displayName = "Link";

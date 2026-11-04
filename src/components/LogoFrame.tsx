@@ -3,18 +3,24 @@
 // ---------------------------------------------------------------------------
 //
 // Composes `ProductIcon`, `ProductRootName`, `ProductSuffix`, and the Comete
-// tagline into the full logo shape for a given product. All top-level logo
+// tagline into the full logo shape for a given entity. All top-level logo
 // components (`Comete`, `OnTime`, `Link`, `Bi`, `Mce`, `Academie`, `Club`)
 // are thin wrappers around this helper.
 //
 // Layout rules:
 //   format="icon"                  → just `ProductIcon` (square).
+//   format="wordmark"              → the standalone Figma wordmark drawing
+//                                    (letters + ring "o", no icon), scaled to
+//                                    the row height; suffix / tagline rules
+//                                    unchanged.
 //   taglineAlign="none"               → 144×32 wordmark + icon overlay.
 //   taglineAlign="inline" (non-comete)→ wordmark + icon overlay + suffix inline.
 //   taglineAlign="column" (non-comete)→ wordmark + icon overlay, suffix scaled 0.6
 //                                    on a second row.
-//   taglineAlign="column" (comete)    → wordmark + icon + "gestion pour la
+//   taglineAlign="column" (comete-*)   → wordmark + icon + "logiciels de la
 //                                    sécurité privée" tagline below.
+//   `comete` is the ERP logo (defaults to no tagline), `comete-company`
+//   the company logo (defaults to the tagline below) — same artwork.
 //
 // Fallback colors (`colors` prop) are applied as CSS custom-property
 // overrides on the wrapper — `ProductIcon`, `ProductRootName`, and
@@ -26,7 +32,7 @@
 //
 // Design notes:
 // - The icon is positioned absolutely over the wordmark using the
-//   product-specific `iconX` value (in wordmark-coordinate units). At
+//   entity-specific `iconX` value (in wordmark-coordinate units). At
 //   `size=32` the wordmark viewBox is 144 units → 1 unit = 1 pixel, so
 //   the pixel offset is `iconX * size / 32`.
 // - The icon's own viewBox is offset to `${iconX} 0 32 32` so its path
@@ -35,31 +41,40 @@
 
 import type { CSSProperties, ReactElement } from "react";
 import { getFallback } from "../fallbacks";
-import { TAGLINE_PATHS } from "../tagline-paths";
+import {
+  TAGLINE_NATURAL_HEIGHT,
+  TAGLINE_NATURAL_WIDTH,
+  TAGLINE_PATHS,
+  TAGLINE_VIEWBOX,
+} from "../tagline-paths";
 import type {
   LogoAppearance,
   LogoColors,
+  LogoEntity,
   LogoFormat,
-  LogoProduct,
   LogoTaglineAlign,
 } from "../types";
-import { getProductIconX, ProductIcon } from "./ProductIcon";
+import {
+  WORDMARK_NATURAL_HEIGHT,
+  WORDMARK_NATURAL_WIDTH,
+} from "../wordmark-paths";
+import { getEntityIconX, ProductIcon } from "./ProductIcon";
 import { ProductRootName } from "./ProductRootName";
 import { ProductSuffix, type ProductSuffixProduct } from "./ProductSuffix";
 
 // ---------------------------------------------------------------------------
 // Public types
 
-type FrameProduct = Exclude<LogoProduct, "mycomete">;
+type FrameEntity = Exclude<LogoEntity, "mycomete">;
 
 export interface LogoFrameProps {
-  /** Target product. */
-  product: FrameProduct;
+  /** Target entity. */
+  entity: FrameEntity;
   /** Visual appearance. @default "brand" */
   appearance?: LogoAppearance;
   /** Display format. @default "logo" */
   format?: LogoFormat;
-  /** TaglineAlign display mode. @default "inline" */
+  /** TaglineAlign display mode. @default "inline" ("column" for comete-company) */
   taglineAlign?: LogoTaglineAlign;
   /** Rendered row height in pixels. @default 32 */
   size?: number;
@@ -72,10 +87,10 @@ export interface LogoFrameProps {
 // ---------------------------------------------------------------------------
 // Suffix mapping (products that have a ProductSuffix; comete handled inline).
 
-const SUFFIX_PRODUCT_MAP: Record<
-  Exclude<FrameProduct, "comete">,
-  ProductSuffixProduct
-> = {
+type CometeEntity = "comete-software" | "comete-company";
+type SuffixedEntity = Exclude<FrameEntity, CometeEntity>;
+
+const SUFFIX_PRODUCT_MAP: Record<SuffixedEntity, ProductSuffixProduct> = {
   ontime: "ontime",
   link: "link",
   bi: "bi",
@@ -85,9 +100,9 @@ const SUFFIX_PRODUCT_MAP: Record<
   cafe: "cafe",
 };
 
-/** Hardcoded taglineAlign placement per product. */
+/** Hardcoded taglineAlign placement per entity. */
 const PARTICLE_POSITION: Record<
-  Exclude<FrameProduct, "comete">,
+  SuffixedEntity,
   { inline: "right" | "left"; column: "top" | "bottom" }
 > = {
   ontime: { inline: "right", column: "bottom" },
@@ -102,8 +117,8 @@ const PARTICLE_POSITION: Record<
 // Scale applied to the suffix on `taglineAlign="column"` (matches legacy column layout).
 const COLUMN_SCALE = 0.6;
 
-// Tagline viewBox for comete column taglineAlign (= BOTTOM_VIEWBOX - wordmark row).
-const COMETE_TAGLINE_VIEWBOX = "0 0 141 7";
+// Gap between the wordmark row and the tagline (Figma: 4.65 units of a 32 row).
+const COMETE_TAGLINE_GAP = 4.65;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -142,7 +157,7 @@ function wrapperClass(
 }
 
 // ---------------------------------------------------------------------------
-// Comete tagline (inline-rendered because it's bespoke to this one product).
+// Comete tagline (inline-rendered because it's bespoke to this one entity).
 
 function CometeTagline({
   size,
@@ -153,29 +168,26 @@ function CometeTagline({
   /** Hex to paint with in fallback mode, rather than `--_logo-subtle`. */
   fallback?: string;
 }): ReactElement {
-  // Width: the tagline is natively ~141u wide, the wordmark is 144u, so we
-  // keep wordmark width (144) to align both rows.
-  const width = size * (144 / 32);
-  const height = size * (7 / 32);
+  // Natural box 141.4 × 7.35 in wordmark-row units (32 = `size`).
+  const width = (size * TAGLINE_NATURAL_WIDTH) / 32;
+  const height = (size * TAGLINE_NATURAL_HEIGHT) / 32;
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox={COMETE_TAGLINE_VIEWBOX}
+      viewBox={TAGLINE_VIEWBOX}
       width={width}
       height={height}
       fill="none"
       aria-hidden="true"
       style={{ display: "block" }}
     >
-      <g transform="translate(1.5, 0)">
-        {TAGLINE_PATHS.map((d) => (
-          <path
-            key={d}
-            d={d}
-            style={{ fill: fallback ?? "var(--_logo-subtle)" }}
-          />
-        ))}
-      </g>
+      {TAGLINE_PATHS.map((d) => (
+        <path
+          key={d}
+          d={d}
+          style={{ fill: fallback ?? "var(--_logo-subtle)" }}
+        />
+      ))}
     </svg>
   );
 }
@@ -187,22 +199,26 @@ function CometeTagline({
  * LogoFrame — composes the three public logo parts into the full logo shape.
  *
  * Not meant to be consumed directly by application code: use one of the
- * product-specific wrappers (`Comete`, `OnTime`, etc.) or the generic
+ * entity-specific wrappers (`Comete`, `OnTime`, etc.) or the generic
  * `Logo` component instead.
  */
 export function LogoFrame({
-  product,
+  entity,
   appearance = "brand",
   format = "logo",
-  taglineAlign = "inline",
+  taglineAlign: taglineAlignProp,
   size = 32,
   colors,
   className,
 }: LogoFrameProps): ReactElement {
+  // Default placement: "inline" everywhere, except the company logo whose
+  // identity is the wordmark + tagline ("column").
+  const taglineAlign: LogoTaglineAlign =
+    taglineAlignProp ?? (entity === "comete-company" ? "column" : "inline");
   const hasFallback = colors !== undefined;
   const cls = wrapperClass(appearance, hasFallback, className);
   // Suffix/tagline tone in fallback mode depends on the surface the
-  // appearance targets (white for brand/neutral, navy for inverse).
+  // appearance targets (white for brand/neutral, navy for inverted).
   const fallbackSubtle = colors
     ? (colors.subtle ?? getFallback(appearance).subtle)
     : undefined;
@@ -212,14 +228,22 @@ export function LogoFrame({
   if (format === "icon") {
     return (
       <span className={cls} style={{ display: "inline-flex", ...vars }}>
-        <ProductIcon product={product} appearance={appearance} size={size} />
+        <ProductIcon entity={entity} appearance={appearance} size={size} />
       </span>
     );
   }
 
   // ---------- Full logo: wordmark + icon overlay (+ optional suffix) ------
-  const iconX = getProductIconX(product);
+  // format="wordmark" → the "o" is a letter, no icon overlay.
+  const isWordmark = format === "wordmark";
+  const iconX = getEntityIconX(entity);
   const iconLeftPx = (iconX * size) / 32;
+
+  // Row width: 144 units for the logo letters, the Figma wordmark box ratio
+  // for the wordmark drawing (both rendered at `size` height).
+  const rowWidth = isWordmark
+    ? (size * WORDMARK_NATURAL_WIDTH) / WORDMARK_NATURAL_HEIGHT
+    : (144 * size) / 32;
 
   // Wordmark row: position:relative so the icon can overlay at iconX.
   const wordmarkRow = (
@@ -227,26 +251,32 @@ export function LogoFrame({
       style={{
         position: "relative",
         display: "inline-block",
-        width: (144 * size) / 32,
+        width: rowWidth,
         height: size,
         lineHeight: 0,
       }}
     >
-      <ProductRootName appearance={appearance} size={size} />
-      <span
-        style={{
-          position: "absolute",
-          left: iconLeftPx,
-          top: 0,
-        }}
-      >
-        <ProductIcon product={product} appearance={appearance} size={size} />
-      </span>
+      <ProductRootName
+        appearance={appearance}
+        size={size}
+        format={isWordmark ? "wordmark" : "logo"}
+      />
+      {!isWordmark && (
+        <span
+          style={{
+            position: "absolute",
+            left: iconLeftPx,
+            top: 0,
+          }}
+        >
+          <ProductIcon entity={entity} appearance={appearance} size={size} />
+        </span>
+      )}
     </span>
   );
 
-  // Comete — taglineAlign is the tagline (or nothing).
-  if (product === "comete") {
+  // Comete (ERP or company) — taglineAlign is the tagline (or nothing).
+  if (entity === "comete-software" || entity === "comete-company") {
     if (taglineAlign !== "column") {
       return (
         <span
@@ -257,7 +287,7 @@ export function LogoFrame({
         </span>
       );
     }
-    // taglineAlign="column" → wordmark above, tagline below at y≈35 (3u gap).
+    // taglineAlign="column" → wordmark above, tagline below (Figma gap 4.65u).
     return (
       <span
         className={cls}
@@ -270,7 +300,7 @@ export function LogoFrame({
         }}
       >
         {wordmarkRow}
-        <span style={{ marginTop: (3 * size) / 32 }}>
+        <span style={{ marginTop: (COMETE_TAGLINE_GAP * size) / 32 }}>
           <CometeTagline size={size} fallback={fallbackSubtle} />
         </span>
       </span>
@@ -278,8 +308,9 @@ export function LogoFrame({
   }
 
   // Non-comete products — map to a ProductSuffix (when taglineAlign !== "none").
-  const suffixProduct = SUFFIX_PRODUCT_MAP[product];
-  const pos = PARTICLE_POSITION[product];
+  const suffixed: SuffixedEntity = entity;
+  const suffixProduct = SUFFIX_PRODUCT_MAP[suffixed];
+  const pos = PARTICLE_POSITION[suffixed];
 
   if (taglineAlign === "none") {
     return (

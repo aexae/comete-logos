@@ -12,7 +12,7 @@ import { LogoFrame } from "../components/LogoFrame";
 import type { LogoProps } from "../types";
 
 export function OnTime(props: LogoProps): ReactElement {
-  return <LogoFrame product="ontime" {...props} />;
+  return <LogoFrame entity="ontime" {...props} />;
 }
 
 OnTime.displayName = "OnTime";

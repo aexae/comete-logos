@@ -6,7 +6,7 @@ import { LogoFrame } from "../components/LogoFrame";
 import type { LogoProps } from "../types";
 
 export function Mce(props: LogoProps): ReactElement {
-  return <LogoFrame product="mce" {...props} />;
+  return <LogoFrame entity="mce" {...props} />;
 }
 
 Mce.displayName = "Mce";

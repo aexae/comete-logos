@@ -20,6 +20,7 @@ export { CafeComete } from "./logos/CafeComete";
 export { Club } from "./logos/Club";
 // Logos
 export { Comete } from "./logos/Comete";
+export { CometeCompany } from "./logos/CometeCompany";
 export { Link } from "./logos/Link";
 export { Mce } from "./logos/Mce";
 export { MyComete } from "./logos/MyComete";
@@ -30,6 +31,7 @@ export { logoRegistry } from "./registry";
 export type {
   LogoAppearance,
   LogoColors,
+  LogoEntity,
   LogoFormat,
   LogoProduct,
   LogoProps,

@@ -25,16 +25,19 @@ import "@aexae/comete-design-tokens/css";
 
 <Comete size={48} />                                  // logo complet, appearance brand
 <OnTime format="icon" size={32} />                    // icône seule
-<Bi taglineAlign="column" appearance="inverse" />     // nom produit sur une 2e ligne
+<Bi taglineAlign="column" appearance="inverted" />    // nom produit sur une 2e ligne
+<CometeCompany size={48} />                           // logo de l'entreprise, avec la signature
+<Comete format="wordmark" />                          // lettres seules, « o » typographique
 ```
 
 La feuille de style est importée automatiquement par le barrel export : aucun import CSS supplémentaire n'est nécessaire. Elle reste accessible explicitement via `@aexae/comete-logos/styles`.
 
 ## Logos disponibles
 
-| Composant | Produit | `LogoProduct` |
+| Composant | Entité | `LogoEntity` |
 |---|---|---|
-| `Comete` | Comète (logo principal) | `comete` |
+| `Comete` | Comète, le logiciel (ERP) — sans signature | `comete-software` |
+| `CometeCompany` | Comète, l'entreprise — avec la signature | `comete-company` |
 | `OnTime` | Comète On Time | `ontime` |
 | `Link` | Comète Link | `link` |
 | `Bi` | Comète BI | `bi` |
@@ -47,10 +50,10 @@ La feuille de style est importée automatiquement par le barrel export : aucun i
 ### Registry dynamique
 
 ```tsx
-import { logoRegistry, type LogoProduct } from "@aexae/comete-logos";
+import { logoRegistry, type LogoEntity } from "@aexae/comete-logos";
 
-function ProductLogo({ product }: { product: LogoProduct }) {
-  const Logo = logoRegistry[product];
+function EntityLogo({ entity }: { entity: LogoEntity }) {
+  const Logo = logoRegistry[entity];
   return <Logo size={40} />;
 }
 ```
@@ -61,8 +64,8 @@ Tous les logos partagent la même interface `LogoProps` :
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `appearance` | `"brand" \| "neutral" \| "inverse"` | `"brand"` | Apparence visuelle |
-| `format` | `"icon" \| "logo"` | `"logo"` | Icône seule ou logo complet (icône + wordmark) |
+| `appearance` | `"brand" \| "neutral" \| "inverted"` | `"brand"` | Apparence visuelle (`inverted` = sur la surface contraire au thème) |
+| `format` | `"icon" \| "logo" \| "wordmark"` | `"logo"` | Icône seule, logo complet (icône + wordmark) ou wordmark seul (dessin Figma du wordmark, lettres avec un « o » en anneau, sans icône) |
 | `taglineAlign` | `"none" \| "inline" \| "column"` | `"inline"` | Placement du nom de produit / de la tagline |
 | `size` | `number` | `32` | Hauteur de rendu en pixels — la largeur suit proportionnellement |
 | `colors` | `LogoColors` | — | Override de couleurs en inline (**fallback uniquement**, voir plus bas) |
@@ -74,11 +77,11 @@ Les autres props SVG sont transmises à l'élément `<svg>`.
 
 - `none` — wordmark « comete » seul (viewBox 144×32), sans nom de produit
 - `inline` — wordmark + nom de produit sur la même ligne
-- `column` — nom de produit sur une seconde ligne, mis à l'échelle 0,6 et aligné à droite (viewBox 144×60). Sur `Comete`, affiche la tagline *« gestion pour la sécurité privée »*
+- `column` — nom de produit sur une seconde ligne, mis à l'échelle 0,6 et aligné à droite (viewBox 144×60). Sur `Comete` et `CometeCompany` (défaut de ce dernier), affiche la signature *« logiciels de la sécurité privée »*
 
 ### Types exportés
 
-`LogoProps` · `LogoProduct` · `LogoAppearance` · `LogoFormat` · `LogoTaglineAlign` · `LogoColors` · `LogoRegistry`
+`LogoProps` · `LogoEntity` (alias déprécié `LogoProduct`) · `LogoAppearance` · `LogoFormat` · `LogoTaglineAlign` · `LogoColors` · `LogoRegistry`
 
 `LogoType` et `LogoSuffix` sont conservés en alias **dépréciés** de `LogoFormat` et `LogoTaglineAlign`.
 
@@ -90,7 +93,7 @@ Les apparences appliquent la classe `.comete-logo--{appearance}`, qui mappe des 
 |---|---|---|
 | `brand` | `--logo-comete-default` | `--logo-comete-gradient-{light,dark}` |
 | `neutral` | `--logo-comete-neutral` | aplati sur `--logo-comete-neutral` |
-| `inverse` | `--logo-comete-inverted` | `--logo-comete-gradient-{light,dark}` |
+| `inverted` | `--logo-comete-inverted` | `--logo-comete-gradient-{light,dark}` |
 
 Le wordmark secondaire (« on time », « bi », …) utilise `--logo-comete-subtle` pour rester visuellement en retrait.
 
@@ -102,7 +105,7 @@ Le SVG embarque deux corps de comète (`.comete-logo__light` multi-tracés, `.co
 |---|---|---|
 | `brand` | LightBody | DarkBody |
 | `neutral` | DarkBody | DarkBody |
-| `inverse` | DarkBody | LightBody |
+| `inverted` | DarkBody | LightBody |
 
 Le thème est piloté par l'attribut `data-theme` sur un ancêtre (typiquement `<html>`), comme pour le reste de l'écosystème.
 
@@ -120,7 +123,7 @@ Le thème est piloté par l'attribut `data-theme` sur un ancêtre (typiquement `
 }} />
 ```
 
-`subtle` colore le suffixe produit et la signature Comète. S'il est omis, le ton par défaut de l'apparence s'applique : `#596B70` (brand, sur fond blanc), `#224986` (neutral), `#B5C1C4` (inverse, sur fond navy). Un gris unique ne peut pas être lisible sur les deux surfaces.
+`subtle` colore le suffixe produit et la signature Comète. S'il est omis, le ton par défaut de l'apparence s'applique : `#596B70` (brand, sur fond blanc), `#224986` (neutral), `#B5C1C4` (inverted, sur fond navy). Un gris unique ne peut pas être lisible sur les deux surfaces.
 
 Les valeurs par défaut (miroir du thème clair) sont exposées dans `src/fallbacks.ts`.
 

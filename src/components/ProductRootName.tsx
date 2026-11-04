@@ -13,7 +13,13 @@
 
 import type { ReactElement, SVGAttributes } from "react";
 import type { LogoAppearance } from "../types";
-import { COMETE_TEXT_PATHS } from "../wordmark-paths";
+import {
+  COMETE_TEXT_PATHS,
+  WORDMARK_NATURAL_HEIGHT,
+  WORDMARK_NATURAL_WIDTH,
+  WORDMARK_PATHS,
+  WORDMARK_VIEWBOX,
+} from "../wordmark-paths";
 
 /** ViewBox of the full "Comète" wordmark (5 letters + icon slot). */
 export const ROOT_NAME_VIEWBOX = "0 0 144 32";
@@ -28,6 +34,12 @@ export interface ProductRootNameProps
   appearance?: LogoAppearance;
   /** Rendered height in pixels. Width scales proportionally. @default 32 */
   size?: number;
+  /**
+   * "logo": the 5 letters with an empty slot for the comet icon (overlaid by
+   * the parent). "wordmark": the standalone Figma wordmark drawing (letters
+   * plus a ring "o", no icon). @default "logo"
+   */
+  format?: "logo" | "wordmark";
   /** Additional CSS class. */
   className?: string;
 }
@@ -38,17 +50,45 @@ export interface ProductRootNameProps
  * The paths are filled via `var(--_logo-text)`, which resolves through the
  * `.comete-logo--{appearance}` class. The gap between "C" and "m" is left
  * empty so the `ProductIcon` (comet) can be positioned over it by the
- * parent `Logo` wrapper.
+ * parent `Logo` wrapper. `format="wordmark"` renders the standalone Figma
+ * wordmark drawing instead (letters + ring "o", natural box 132.125 × 28).
  */
 export function ProductRootName({
   appearance = "brand",
   size = 32,
+  format = "logo",
   className,
   ...rest
 }: ProductRootNameProps): ReactElement {
   const rootClass = [`comete-logo--${appearance}`, className]
     .filter(Boolean)
     .join(" ");
+  if (format === "wordmark") {
+    const wmWidth = (size * WORDMARK_NATURAL_WIDTH) / WORDMARK_NATURAL_HEIGHT;
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox={WORDMARK_VIEWBOX}
+        width={wmWidth}
+        height={size}
+        fill="none"
+        aria-hidden="true"
+        className={rootClass}
+        {...rest}
+      >
+        {WORDMARK_PATHS.map(({ d, fillRule }) => (
+          <path
+            key={d}
+            d={d}
+            fillRule={fillRule}
+            clipRule={fillRule}
+            style={{ fill: "var(--_logo-text)" }}
+          />
+        ))}
+      </svg>
+    );
+  }
+
   const width = (size * ROOT_NAME_NATURAL_WIDTH) / ROOT_NAME_NATURAL_HEIGHT;
 
   return (

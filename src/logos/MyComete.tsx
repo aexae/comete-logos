@@ -141,7 +141,7 @@ function DarkBody({ darkGradId }: { darkGradId: string }) {
  *
  * Renders two SVGs controlled via CSS [data-theme]:
  * - Light brand: multi-path (text exterior + gradient interior)
- * - Dark brand / neutral / inverse: evenodd (gradient with cutout)
+ * - Dark brand / neutral / inverted: evenodd (gradient with cutout)
  */
 export function MyComete({
   appearance = "brand",

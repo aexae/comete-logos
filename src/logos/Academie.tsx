@@ -6,7 +6,7 @@ import { LogoFrame } from "../components/LogoFrame";
 import type { LogoProps } from "../types";
 
 export function Academie(props: LogoProps): ReactElement {
-  return <LogoFrame product="academie" {...props} />;
+  return <LogoFrame entity="academie" {...props} />;
 }
 
 Academie.displayName = "Academie";

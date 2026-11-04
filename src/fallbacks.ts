@@ -8,10 +8,10 @@ import type { LogoAppearance, LogoColors } from "./types";
 // that an un-themed render produces the same result as the default light UI.
 //
 // WHY `subtle` differs per appearance: the suffix sits on a white surface for
-// brand/neutral and on a navy surface for inverse, so a single grey cannot be
+// brand/neutral and on a navy surface for inverted, so a single grey cannot be
 // readable on both (the former shared #6F8488 gave 3.9:1 on white and 3.0:1
 // on navy, below AA). Values mirror logo.comete.subtle (brand),
-// logo.comete.neutral (neutral) and logo.comete.subtle-inverted (inverse).
+// logo.comete.neutral (neutral) and logo.comete.subtle-inverted (inverted).
 // ---------------------------------------------------------------------------
 
 export const FALLBACK_COLORS: Record<LogoAppearance, Required<LogoColors>> = {
@@ -29,7 +29,7 @@ export const FALLBACK_COLORS: Record<LogoAppearance, Required<LogoColors>> = {
     gradientDark: "#F8BF01",
     subtle: "#224986",
   },
-  inverse: {
+  inverted: {
     text: "#F0F8FE",
     icon: "#F0F8FE",
     gradientLight: "#FFF146",

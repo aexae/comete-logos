@@ -6,7 +6,7 @@ import { LogoFrame } from "../components/LogoFrame";
 import type { LogoProps } from "../types";
 
 export function Club(props: LogoProps): ReactElement {
-  return <LogoFrame product="club" {...props} />;
+  return <LogoFrame entity="club" {...props} />;
 }
 
 Club.displayName = "Club";

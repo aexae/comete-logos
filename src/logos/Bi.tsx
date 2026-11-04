@@ -6,7 +6,7 @@ import { LogoFrame } from "../components/LogoFrame";
 import type { LogoProps } from "../types";
 
 export function Bi(props: LogoProps): ReactElement {
-  return <LogoFrame product="bi" {...props} />;
+  return <LogoFrame entity="bi" {...props} />;
 }
 
 Bi.displayName = "Bi";

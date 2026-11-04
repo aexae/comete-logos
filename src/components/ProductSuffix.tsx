@@ -174,7 +174,7 @@ export interface ProductSuffixProps
  * Product-name suffix — the wordmark suffix rendered beside "Comète".
  *
  * Paths are filled via `var(--_logo-subtle)` so that they pick up the
- * theme-aware muted tone (brand + inverse) or the same tone as the
+ * theme-aware muted tone (brand + inverted) or the same tone as the
  * wordmark (neutral). Layout (row / column) is the caller's concern:
  * `Logo` stacks or inlines this component together with `ProductRootName`
  * and `ProductIcon`.
