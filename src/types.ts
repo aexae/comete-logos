@@ -24,18 +24,17 @@ export type LogoSuffix = LogoTaglineAlign;
  * itself is not a product, yet it has a logo.
  */
 export type LogoEntity =
-  /** Comète, the ERP software (no tagline). */
-  | "comete-software"
+  | "academie"
+  | "bi"
+  | "cafe"
+  | "club"
   /** Comète, the company (wordmark + tagline). */
   | "comete-company"
-  | "ontime"
+  /** Comète, the ERP software — never shows the tagline. */
+  | "comete-software"
   | "link"
-  | "bi"
-  | "academie"
-  | "club"
   | "mce"
-  | "cafe"
-  | "mycomete";
+  | "ontime";
 
 /** @deprecated Use LogoEntity instead. */
 export type LogoProduct = LogoEntity;

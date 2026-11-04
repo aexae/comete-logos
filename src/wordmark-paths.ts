@@ -45,7 +45,7 @@ export const COMETE_TEXT_PATHS = [
 // ---------------------------------------------------------------------------
 //
 // Exported as-is from Figma (Comète Design System › ❖ Logo › Figma parts /
-// _LogoProductRootName › format=wordmark). It is NOT the logo letters plus
+// _LogoEntityRootName › format=wordmark). It is NOT the logo letters plus
 // an "o": the wordmark is a standalone typographic drawing with its own
 // spacing and a ring "o" in place of the comet. Natural box 132.125 × 28
 // (no icon above the letters, so the box is shorter than the 32-unit logo

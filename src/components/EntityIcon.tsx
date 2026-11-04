@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// ProductIcon — Comète Design System (logos)
+// EntityIcon — Comète Design System (logos)
 // ---------------------------------------------------------------------------
 //
 // Standalone square 32×32 icon for a given entity.
@@ -15,7 +15,7 @@
 //
 // Products with dual bodies (OnTime, Link, Bi, Mce, Academie, Club) render
 // TWO nested <svg> elements (light + dark body) so CSS can toggle between
-// them. Comete and MyComete have a single body and render a single <svg>.
+// them. Comete has a single body and renders a single <svg>.
 
 import {
   type ReactElement,
@@ -200,7 +200,7 @@ const CAFE_CONFIG: DualBodyConfig = {
     "M26.9324 25.3026L16 0L41.1301 10.3893C45.2247 12.0741 47.9271 16.1092 47.9987 20.6123C48.0908 26.8001 43.2388 31.9064 37.1687 32H36.9947C32.6442 32 28.693 29.3793 26.9324 25.3026ZM31.9588 24.7551C32.3447 25.9708 33.1007 27.0243 34.1062 27.8033H41.8906C43.5359 26.6015 44.2818 24.8189 44.3687 22.8112C44.4104 21.8465 44.4402 20.5007 44.3687 19.5513C44.3245 18.9663 44.0639 18.4949 43.4351 18.4258H31.0296C28.8391 18.6826 27.5466 21.0239 28.5473 23.0186C29.1957 24.3111 30.5526 24.8712 31.9588 24.7551ZM31.6781 23.1203C29.2456 23.2989 29.2538 19.8508 31.6781 20.0558V23.1203ZM40.4239 13.704C39.7529 13.0162 38.6922 12.5617 37.7347 12.4906C37.4549 12.47 36.7105 12.4503 36.4652 12.5127C35.9267 12.6495 35.7136 13.2917 35.9958 13.751C36.3303 14.2958 37.0171 14.0774 37.5461 14.1163C38.6063 14.194 39.5993 14.8256 39.8139 15.9185C39.8849 16.2814 39.7995 16.8554 39.9353 17.1376C40.2933 17.8801 41.38 17.6785 41.4899 16.8674C41.6363 15.7918 41.177 14.4753 40.4239 13.704ZM34.0376 11.4957C33.5476 11.394 33.0734 11.6661 33.0186 12.1787C32.7043 15.1175 34.8996 17.2836 37.8307 16.9908C38.5161 16.9221 38.8871 16.1691 38.4307 15.6258C38.0923 15.2231 37.4856 15.3973 37.0177 15.3628C35.8034 15.272 34.7571 14.3803 34.6476 13.1362C34.5987 12.578 34.8247 11.6589 34.0376 11.4957Z",
 };
 
-const CONFIG_BY_ENTITY: Record<Exclude<LogoEntity, "mycomete">, IconConfig> = {
+const CONFIG_BY_ENTITY: Record<LogoEntity, IconConfig> = {
   "comete-software": COMETE_CONFIG,
   "comete-company": COMETE_CONFIG,
   ontime: ONTIME_CONFIG,
@@ -217,17 +217,16 @@ const CONFIG_BY_ENTITY: Record<Exclude<LogoEntity, "mycomete">, IconConfig> = {
 
 /** X offset (wordmark coords) where the icon sits for a given entity. */
 export function getEntityIconX(entity: LogoEntity): number {
-  if (entity === "mycomete") return 0;
   return CONFIG_BY_ENTITY[entity].iconX;
 }
 
 // ---------------------------------------------------------------------------
 // Component
 
-export interface ProductIconProps
+export interface EntityIconProps
   extends Omit<SVGAttributes<SVGSVGElement>, "color"> {
   /** Target entity. */
-  entity: Exclude<LogoEntity, "mycomete">;
+  entity: LogoEntity;
   /** Appearance (drives CSS custom properties). @default "brand" */
   appearance?: LogoAppearance;
   /** Rendered square size in px. @default 32 */
@@ -248,13 +247,13 @@ export interface ProductIconProps
  * so `styles/logos.css` can toggle which is visible per appearance/theme.
  * Comete renders a single `<svg>`.
  */
-export function ProductIcon({
+export function EntityIcon({
   entity,
   appearance = "brand",
   size = 32,
   className,
   ...rest
-}: ProductIconProps): ReactElement {
+}: EntityIconProps): ReactElement {
   const uid = useId();
   const config = CONFIG_BY_ENTITY[entity];
 
@@ -376,4 +375,4 @@ export function ProductIcon({
   );
 }
 
-ProductIcon.displayName = "ProductIcon";
+EntityIcon.displayName = "EntityIcon";

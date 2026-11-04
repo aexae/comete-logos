@@ -1,27 +1,27 @@
 // ---------------------------------------------------------------------------
-// ProductSuffix — Comète Design System (logos)
+// EntitySuffix — Comète Design System (logos)
 // ---------------------------------------------------------------------------
 //
 // Product-name suffix rendered as its own SVG — the text that appears
-// after "Comète" in product logos (e.g. "on time", "link", "bi"…).
+// after "Comète" in entity logos (e.g. "on time", "link", "bi"…).
 //
-// Single source of truth for each product's wordmark suffix. `Logo` composes
-// this beside `ProductRootName` + `ProductIcon` to build the full logo.
+// Single source of truth for each entity's wordmark suffix. `Logo` composes
+// this beside `EntityRootName` + `EntityIcon` to build the full logo.
 // Layout decisions (row vs column) belong to `Logo`; this component always
 // renders at its natural horizontal size with a tight viewBox.
 //
-// Coordinates use the legacy per-product layout (paths start around x≈155
+// Coordinates use the legacy per-entity layout (paths start around x≈155
 // in the original full-logo viewBox). The SVG viewBox here starts at x=144
 // (end of the "Comète" wordmark) so that the natural whitespace between the
 // wordmark and the suffix text is built into the SVG itself — `Logo` can
-// simply place `ProductSuffix` immediately after `ProductRootName` with no
+// simply place `EntitySuffix` immediately after `EntityRootName` with no
 // gap management.
 
 import type { ReactElement, SVGAttributes } from "react";
 import type { LogoAppearance } from "../types";
 
 // ---------------------------------------------------------------------------
-// Per-product suffix data
+// Per-entity suffix data
 
 type SuffixConfig = {
   /** Tight viewBox framing the suffix text (offset into the original coords). */
@@ -110,8 +110,8 @@ const CLUB_SUFFIX: SuffixConfig = {
   ],
 };
 
-/** Products that have a wordmark suffix (excludes comete and mycomete). */
-export type ProductSuffixProduct =
+/** Entities that have a wordmark suffix (the product lines; excludes the two Comète logos). */
+export type SuffixEntity =
   | "ontime"
   | "link"
   | "bi"
@@ -132,7 +132,7 @@ const CAFE_SUFFIX: SuffixConfig = {
   ],
 };
 
-const SUFFIX_BY_PRODUCT: Record<ProductSuffixProduct, SuffixConfig> = {
+const SUFFIX_BY_ENTITY: Record<SuffixEntity, SuffixConfig> = {
   ontime: ONTIME_SUFFIX,
   link: LINK_SUFFIX,
   bi: BI_SUFFIX,
@@ -145,23 +145,23 @@ const SUFFIX_BY_PRODUCT: Record<ProductSuffixProduct, SuffixConfig> = {
 // ---------------------------------------------------------------------------
 // Helpers
 
-/** ViewBox / natural width + height metadata for a product suffix. */
-export function getProductSuffixMetrics(product: ProductSuffixProduct): {
+/** ViewBox / natural width + height metadata for a entity suffix. */
+export function getEntitySuffixMetrics(entity: SuffixEntity): {
   viewBox: string;
   width: number;
   height: number;
 } {
-  const cfg = SUFFIX_BY_PRODUCT[product];
+  const cfg = SUFFIX_BY_ENTITY[entity];
   return { viewBox: cfg.viewBox, width: cfg.width, height: cfg.height };
 }
 
 // ---------------------------------------------------------------------------
 // Component
 
-export interface ProductSuffixProps
+export interface EntitySuffixProps
   extends Omit<SVGAttributes<SVGSVGElement>, "color"> {
-  /** Target product name. */
-  product: ProductSuffixProduct;
+  /** Target entity name. */
+  entity: SuffixEntity;
   /** Appearance (drives CSS custom properties). @default "brand" */
   appearance?: LogoAppearance;
   /** Rendered height in pixels. Width scales proportionally. @default 32 */
@@ -176,17 +176,17 @@ export interface ProductSuffixProps
  * Paths are filled via `var(--_logo-subtle)` so that they pick up the
  * theme-aware muted tone (brand + inverted) or the same tone as the
  * wordmark (neutral). Layout (row / column) is the caller's concern:
- * `Logo` stacks or inlines this component together with `ProductRootName`
- * and `ProductIcon`.
+ * `Logo` stacks or inlines this component together with `EntityRootName`
+ * and `EntityIcon`.
  */
-export function ProductSuffix({
-  product,
+export function EntitySuffix({
+  entity,
   appearance = "brand",
   size = 32,
   className,
   ...rest
-}: ProductSuffixProps): ReactElement {
-  const cfg = SUFFIX_BY_PRODUCT[product];
+}: EntitySuffixProps): ReactElement {
+  const cfg = SUFFIX_BY_ENTITY[entity];
   const rootClass = [`comete-logo--${appearance}`, className]
     .filter(Boolean)
     .join(" ");
@@ -210,4 +210,4 @@ export function ProductSuffix({
   );
 }
 
-ProductSuffix.displayName = "ProductSuffix";
+EntitySuffix.displayName = "EntitySuffix";

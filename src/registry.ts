@@ -6,19 +6,18 @@ import { Comete } from "./logos/Comete";
 import { CometeCompany } from "./logos/CometeCompany";
 import { Link } from "./logos/Link";
 import { Mce } from "./logos/Mce";
-import { MyComete } from "./logos/MyComete";
 import { OnTime } from "./logos/OnTime";
 import type { LogoRegistry } from "./types";
 
+// Alphabetical: this order is what pickers (Storybook, registries) display.
 export const logoRegistry: LogoRegistry = {
-  "comete-software": Comete,
-  "comete-company": CometeCompany,
-  ontime: OnTime,
-  link: Link,
-  bi: Bi,
   academie: Academie,
-  club: Club,
-  mce: Mce,
+  bi: Bi,
   cafe: CafeComete,
-  mycomete: MyComete,
+  club: Club,
+  "comete-company": CometeCompany,
+  "comete-software": Comete,
+  link: Link,
+  mce: Mce,
+  ontime: OnTime,
 };

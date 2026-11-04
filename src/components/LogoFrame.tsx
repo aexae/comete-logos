@@ -2,13 +2,13 @@
 // LogoFrame — internal composition helper
 // ---------------------------------------------------------------------------
 //
-// Composes `ProductIcon`, `ProductRootName`, `ProductSuffix`, and the Comete
+// Composes `EntityIcon`, `EntityRootName`, `EntitySuffix`, and the Comete
 // tagline into the full logo shape for a given entity. All top-level logo
 // components (`Comete`, `OnTime`, `Link`, `Bi`, `Mce`, `Academie`, `Club`)
 // are thin wrappers around this helper.
 //
 // Layout rules:
-//   format="icon"                  → just `ProductIcon` (square).
+//   format="icon"                  → just `EntityIcon` (square).
 //   format="wordmark"              → the standalone Figma wordmark drawing
 //                                    (letters + ring "o", no icon), scaled to
 //                                    the row height; suffix / tagline rules
@@ -23,12 +23,9 @@
 //   the company logo (defaults to the tagline below) — same artwork.
 //
 // Fallback colors (`colors` prop) are applied as CSS custom-property
-// overrides on the wrapper — `ProductIcon`, `ProductRootName`, and
-// `ProductSuffix` already consume the same custom properties, so the
+// overrides on the wrapper — `EntityIcon`, `EntityRootName`, and
+// `EntitySuffix` already consume the same custom properties, so the
 // override cascades into each of them without touching their code.
-//
-// MyComete has a unique artwork (cloud + comet + "my" + "comète") and is
-// kept as its own bespoke component outside of this composition path.
 //
 // Design notes:
 // - The icon is positioned absolutely over the wordmark using the
@@ -58,14 +55,14 @@ import {
   WORDMARK_NATURAL_HEIGHT,
   WORDMARK_NATURAL_WIDTH,
 } from "../wordmark-paths";
-import { getEntityIconX, ProductIcon } from "./ProductIcon";
-import { ProductRootName } from "./ProductRootName";
-import { ProductSuffix, type ProductSuffixProduct } from "./ProductSuffix";
+import { EntityIcon, getEntityIconX } from "./EntityIcon";
+import { EntityRootName } from "./EntityRootName";
+import { EntitySuffix, type SuffixEntity } from "./EntitySuffix";
 
 // ---------------------------------------------------------------------------
 // Public types
 
-type FrameEntity = Exclude<LogoEntity, "mycomete">;
+type FrameEntity = LogoEntity;
 
 export interface LogoFrameProps {
   /** Target entity. */
@@ -85,12 +82,12 @@ export interface LogoFrameProps {
 }
 
 // ---------------------------------------------------------------------------
-// Suffix mapping (products that have a ProductSuffix; comete handled inline).
+// Suffix mapping (products that have a EntitySuffix; comete handled inline).
 
 type CometeEntity = "comete-software" | "comete-company";
 type SuffixedEntity = Exclude<FrameEntity, CometeEntity>;
 
-const SUFFIX_PRODUCT_MAP: Record<SuffixedEntity, ProductSuffixProduct> = {
+const SUFFIX_ENTITY_MAP: Record<SuffixedEntity, SuffixEntity> = {
   ontime: "ontime",
   link: "link",
   bi: "bi",
@@ -228,7 +225,7 @@ export function LogoFrame({
   if (format === "icon") {
     return (
       <span className={cls} style={{ display: "inline-flex", ...vars }}>
-        <ProductIcon entity={entity} appearance={appearance} size={size} />
+        <EntityIcon entity={entity} appearance={appearance} size={size} />
       </span>
     );
   }
@@ -256,7 +253,7 @@ export function LogoFrame({
         lineHeight: 0,
       }}
     >
-      <ProductRootName
+      <EntityRootName
         appearance={appearance}
         size={size}
         format={isWordmark ? "wordmark" : "logo"}
@@ -269,15 +266,16 @@ export function LogoFrame({
             top: 0,
           }}
         >
-          <ProductIcon entity={entity} appearance={appearance} size={size} />
+          <EntityIcon entity={entity} appearance={appearance} size={size} />
         </span>
       )}
     </span>
   );
 
-  // Comete (ERP or company) — taglineAlign is the tagline (or nothing).
+  // Comète — the company logo may carry the tagline below (`column`);
+  // the software logo never does, whatever `taglineAlign` says.
   if (entity === "comete-software" || entity === "comete-company") {
-    if (taglineAlign !== "column") {
+    if (entity === "comete-software" || taglineAlign !== "column") {
       return (
         <span
           className={cls}
@@ -307,9 +305,9 @@ export function LogoFrame({
     );
   }
 
-  // Non-comete products — map to a ProductSuffix (when taglineAlign !== "none").
+  // Non-comete products — map to a EntitySuffix (when taglineAlign !== "none").
   const suffixed: SuffixedEntity = entity;
-  const suffixProduct = SUFFIX_PRODUCT_MAP[suffixed];
+  const suffixEntity = SUFFIX_ENTITY_MAP[suffixed];
   const pos = PARTICLE_POSITION[suffixed];
 
   if (taglineAlign === "none") {
@@ -326,11 +324,7 @@ export function LogoFrame({
   if (taglineAlign === "inline") {
     const gap = (11 * size) / 32;
     const suffixEl = (
-      <ProductSuffix
-        product={suffixProduct}
-        appearance={appearance}
-        size={size}
-      />
+      <EntitySuffix entity={suffixEntity} appearance={appearance} size={size} />
     );
     return (
       <span
@@ -360,8 +354,8 @@ export function LogoFrame({
         pos.column === "bottom" ? { marginTop: gap } : { marginBottom: gap }
       }
     >
-      <ProductSuffix
-        product={suffixProduct}
+      <EntitySuffix
+        entity={suffixEntity}
         appearance={appearance}
         size={suffixSize}
       />

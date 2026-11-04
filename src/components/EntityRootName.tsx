@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------
-// ProductRootName — Comète Design System (logos)
+// EntityRootName — Comète Design System (logos)
 // ---------------------------------------------------------------------------
 //
 // Renders the "Comète" wordmark — just the 5 text letters (C, m, è, t, e).
 // The comet icon (the "o" glyph) is NOT included here — it is a separate
-// component (`ProductIcon`) so that each product can swap its own comet
+// component (`EntityIcon`) so that each product can swap its own comet
 // path while the root name stays identical across all products.
 //
 // Coordinate system: all letter paths are designed for a 32-height viewBox
@@ -28,7 +28,7 @@ export const ROOT_NAME_NATURAL_WIDTH = 144;
 /** Natural height of the wordmark viewBox. */
 export const ROOT_NAME_NATURAL_HEIGHT = 32;
 
-export interface ProductRootNameProps
+export interface EntityRootNameProps
   extends Omit<SVGAttributes<SVGSVGElement>, "color"> {
   /** Appearance (drives CSS custom properties). @default "brand" */
   appearance?: LogoAppearance;
@@ -49,17 +49,17 @@ export interface ProductRootNameProps
  *
  * The paths are filled via `var(--_logo-text)`, which resolves through the
  * `.comete-logo--{appearance}` class. The gap between "C" and "m" is left
- * empty so the `ProductIcon` (comet) can be positioned over it by the
+ * empty so the `EntityIcon` (comet) can be positioned over it by the
  * parent `Logo` wrapper. `format="wordmark"` renders the standalone Figma
  * wordmark drawing instead (letters + ring "o", natural box 132.125 × 28).
  */
-export function ProductRootName({
+export function EntityRootName({
   appearance = "brand",
   size = 32,
   format = "logo",
   className,
   ...rest
-}: ProductRootNameProps): ReactElement {
+}: EntityRootNameProps): ReactElement {
   const rootClass = [`comete-logo--${appearance}`, className]
     .filter(Boolean)
     .join(" ");
@@ -109,4 +109,4 @@ export function ProductRootName({
   );
 }
 
-ProductRootName.displayName = "ProductRootName";
+EntityRootName.displayName = "EntityRootName";

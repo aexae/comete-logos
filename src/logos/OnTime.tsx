@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 //
 // Thin wrapper around `LogoFrame`, which composes the three primitive parts
-// (`ProductIcon`, `ProductRootName`, `ProductSuffix`) into the full logo.
+// (`EntityIcon`, `EntityRootName`, `EntitySuffix`) into the full logo.
 // All styling (appearance + theme) is handled by `styles/logos.css` via
 // the CSS custom properties consumed by each primitive.
 

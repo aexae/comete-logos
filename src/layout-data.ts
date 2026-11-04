@@ -39,7 +39,7 @@ export const WORDMARK_VIEWBOX = "0 0 144 32";
  *
  * Bounding boxes (minX, maxX, minY) are approximated from the SVG path data.
  */
-export const PRODUCT_LAYOUTS = {
+export const ENTITY_LAYOUTS = {
   ontime: {
     rowViewBox: "0 0 286 32",
     productNameTransform: `translate(${r(RIGHT_EDGE - COLUMN_SCALE * 284.5)}, ${r(COLUMN_Y - COLUMN_SCALE * 2)}) scale(${COLUMN_SCALE})`,

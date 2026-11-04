@@ -1,10 +1,9 @@
 // ---------------------------------------------------------------------------
 // Comete — logo of the Comète ERP software (thin wrapper around LogoFrame).
 //
-// No product suffix and, by default, no tagline: the software logo is the
-// bare wordmark + comet. The company logo (wordmark + tagline) is
-// `CometeCompany` (`entity="comete-company"`). `taglineAlign="column"`
-// still renders the tagline here for backward compatibility.
+// No suffix and never a tagline: the software logo is the bare wordmark +
+// comet, whatever `taglineAlign` says. The company logo (wordmark + tagline)
+// is `CometeCompany` (`entity="comete-company"`).
 
 import type { ReactElement } from "react";
 import { LogoFrame } from "../components/LogoFrame";

@@ -36,7 +36,7 @@ La feuille de style est importée automatiquement par le barrel export : aucun i
 
 | Composant | Entité | `LogoEntity` |
 |---|---|---|
-| `Comete` | Comète, le logiciel (ERP) — sans signature | `comete-software` |
+| `Comete` | Comète, le logiciel (ERP) — jamais de signature | `comete-software` |
 | `CometeCompany` | Comète, l'entreprise — avec la signature | `comete-company` |
 | `OnTime` | Comète On Time | `ontime` |
 | `Link` | Comète Link | `link` |
@@ -45,7 +45,6 @@ La feuille de style est importée automatiquement par le barrel export : aucun i
 | `Academie` | Comète Académie | `academie` |
 | `Club` | Comète Club | `club` |
 | `CafeComete` | Café Comète | `cafe` |
-| `MyComete` | MyComète | `mycomete` |
 
 ### Registry dynamique
 
@@ -77,7 +76,7 @@ Les autres props SVG sont transmises à l'élément `<svg>`.
 
 - `none` — wordmark « comete » seul (viewBox 144×32), sans nom de produit
 - `inline` — wordmark + nom de produit sur la même ligne
-- `column` — nom de produit sur une seconde ligne, mis à l'échelle 0,6 et aligné à droite (viewBox 144×60). Sur `Comete` et `CometeCompany` (défaut de ce dernier), affiche la signature *« logiciels de la sécurité privée »*
+- `column` — nom de produit sur une seconde ligne, mis à l'échelle 0,6 et aligné à droite (viewBox 144×60). Sur `CometeCompany` (son défaut), affiche la signature *« logiciels de la sécurité privée »*
 
 ### Types exportés
 
@@ -133,26 +132,26 @@ Pour des compositions sur mesure, les briques internes sont exportées :
 
 | Export | Rôle |
 |---|---|
-| `ProductIcon` | Icône comète seule |
-| `ProductRootName` | Wordmark « comete » |
-| `ProductSuffix` | Nom de produit (+ `getProductSuffixMetrics` pour ses métriques) |
+| `EntityIcon` | Icône comète seule |
+| `EntityRootName` | Wordmark « comete » |
+| `EntitySuffix` | Nom de produit (+ `getEntitySuffixMetrics` pour ses métriques) |
 
 ## Architecture
 
 ```
 comete-logos/
 ├── src/
-│   ├── logos/*.tsx           # 9 logos produits (wrappers autour de LogoFrame)
+│   ├── logos/*.tsx           # 9 logos — entités (wrappers autour de LogoFrame)
 │   ├── components/
 │   │   ├── LogoFrame.tsx     # Composition icône + wordmark + suffixe/tagline
-│   │   ├── ProductIcon.tsx
-│   │   ├── ProductRootName.tsx
-│   │   └── ProductSuffix.tsx
+│   │   ├── EntityIcon.tsx
+│   │   ├── EntityRootName.tsx
+│   │   └── EntitySuffix.tsx
 │   ├── wordmark-paths.ts     # Tracés SVG du wordmark
 │   ├── tagline-paths.ts      # Tracés SVG des taglines
 │   ├── layout-data.ts        # Métriques du layout column (échelle, transforms)
 │   ├── fallbacks.ts          # Couleurs de repli hors tokens
-│   ├── registry.ts           # Map LogoProduct → composant
+│   ├── registry.ts           # Map LogoEntity → composant
 │   ├── styles/logos.css      # Apparences → tokens + bascule light/dark
 │   └── types.ts
 └── dist/                     # Build ESM (tsup)
@@ -160,7 +159,6 @@ comete-logos/
 
 L'icône est superposée au wordmark via un offset `iconX` exprimé en unités de la viewBox du wordmark (144 unités = `size` × 4,5), ce qui garantit un alignement au pixel quelle que soit la taille.
 
-`MyComete` a un dessin propre (nuage + comète + « my » + « comète ») et reste en dehors du chemin de composition `LogoFrame`.
 
 ## Commandes
 
