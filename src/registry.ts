@@ -7,6 +7,7 @@ import { CometeCompany } from "./logos/CometeCompany";
 import { Link } from "./logos/Link";
 import { Mce } from "./logos/Mce";
 import { OnTime } from "./logos/OnTime";
+import { Orca } from "./logos/Orca";
 import type { LogoRegistry } from "./types";
 
 // Alphabetical: this order is what pickers (Storybook, registries) display.
@@ -20,4 +21,5 @@ export const logoRegistry: LogoRegistry = {
   link: Link,
   mce: Mce,
   ontime: OnTime,
+  orca: Orca,
 };
