@@ -39,6 +39,16 @@
 import type { CSSProperties, ReactElement } from "react";
 import { getFallback } from "../fallbacks";
 import {
+  ORCA_COLUMN_NATURAL_HEIGHT,
+  ORCA_COLUMN_NATURAL_WIDTH,
+  ORCA_COLUMN_PATHS,
+  ORCA_COLUMN_VIEWBOX,
+  ORCA_INLINE_NATURAL_HEIGHT,
+  ORCA_INLINE_NATURAL_WIDTH,
+  ORCA_INLINE_PATHS,
+  ORCA_INLINE_VIEWBOX,
+} from "../orca-paths";
+import {
   TAGLINE_NATURAL_HEIGHT,
   TAGLINE_NATURAL_WIDTH,
   TAGLINE_PATHS,
@@ -85,7 +95,9 @@ export interface LogoFrameProps {
 // Suffix mapping (products that have a EntitySuffix; comete handled inline).
 
 type CometeEntity = "comete-software" | "comete-company";
-type SuffixedEntity = Exclude<FrameEntity, CometeEntity>;
+// Orca est hors de cette union : marque autonome, elle n'a pas de suffixe
+// produit à accoler à un wordmark « comète » puisqu'elle n'en porte pas.
+type SuffixedEntity = Exclude<FrameEntity, CometeEntity | "orca">;
 
 const SUFFIX_ENTITY_MAP: Record<SuffixedEntity, SuffixEntity> = {
   ontime: "ontime",
@@ -226,6 +238,56 @@ export function LogoFrame({
     return (
       <span className={cls} style={{ display: "inline-flex", ...vars }}>
         <EntityIcon entity={entity} appearance={appearance} size={size} />
+      </span>
+    );
+  }
+
+  // ---------- Orca — marque autonome, hors composition Comète -------------
+  // Rien à composer ici : le dessin Figma est complet, lettrage compris. On
+  // le pose tel quel au lieu de le faire passer par le wordmark « comète »,
+  // la comète en surimpression et le suffixe produit, dont Orca n'a aucun.
+  // `format="wordmark"` est traité comme `"logo"` : il n'y a pas de wordmark
+  // Comète à isoler du reste.
+  if (entity === "orca") {
+    const column = taglineAlign === "column";
+    const box = column
+      ? {
+          viewBox: ORCA_COLUMN_VIEWBOX,
+          width: ORCA_COLUMN_NATURAL_WIDTH,
+          height: ORCA_COLUMN_NATURAL_HEIGHT,
+          paths: ORCA_COLUMN_PATHS,
+        }
+      : {
+          viewBox: ORCA_INLINE_VIEWBOX,
+          width: ORCA_INLINE_NATURAL_WIDTH,
+          height: ORCA_INLINE_NATURAL_HEIGHT,
+          paths: ORCA_INLINE_PATHS,
+        };
+    // `size` = hauteur rendue de la boîte, comme pour tous les autres logos
+    // du paquet (cf. la prop `size`). Le lettrage d'Orca occupe une plus
+    // grande part de sa boîte que « comète » de la sienne : à `size` égal
+    // le mot « orca » paraît donc un peu plus gros, c'est attendu.
+    const unit = size / box.height;
+    return (
+      <span
+        className={cls}
+        style={{ display: "inline-flex", lineHeight: 0, ...vars }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox={box.viewBox}
+          width={box.width * unit}
+          height={box.height * unit}
+          fill="none"
+          aria-hidden="true"
+          style={{ display: "block" }}
+        >
+          {box.paths.map((d) => (
+            // `vars` a déjà réécrit --_logo-text quand `colors` est fourni,
+            // donc la variable suffit : pas de cas particulier « fallback ».
+            <path key={d} d={d} style={{ fill: "var(--_logo-text)" }} />
+          ))}
+        </svg>
       </span>
     );
   }

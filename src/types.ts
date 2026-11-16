@@ -34,7 +34,15 @@ export type LogoEntity =
   | "comete-software"
   | "link"
   | "mce"
-  | "ontime";
+  | "ontime"
+  /**
+   * Orca — marque autonome, et le seul membre de cette union qui ne soit pas
+   * une sous-marque Comète : son logo ne porte ni le wordmark « comète », ni
+   * la comète, ni de suffixe produit. `LogoFrame` le court-circuite donc
+   * avant toute composition, et `format="wordmark"` y est traité comme
+   * `format="logo"` faute de wordmark Comète à isoler.
+   */
+  | "orca";
 
 /** @deprecated Use LogoEntity instead. */
 export type LogoProduct = LogoEntity;

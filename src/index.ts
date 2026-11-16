@@ -24,6 +24,7 @@ export { CometeCompany } from "./logos/CometeCompany";
 export { Link } from "./logos/Link";
 export { Mce } from "./logos/Mce";
 export { OnTime } from "./logos/OnTime";
+export { Orca } from "./logos/Orca";
 export { logoRegistry } from "./registry";
 
 // Types
